@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J'y serai - Nuit du Fou Rire</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      color: #d62828;
+    }
+    canvas {
+      border: 2px solid #333;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    }
+    input[type="file"] {
+      margin-top: 20px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2a9d8f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #21867a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ajoute ta photo et dis "J’y serai !"</h1>
+  <p>Sélectionne une photo de ton visage et elle sera automatiquement ajoutée à l'affiche.</p>
+  <input type="file" id="upload" accept="image/*"><br>
+  <canvas id="canvas" width="600" height="800"></canvas><br>
+  <button onclick="downloadImage()">Télécharger l'affiche</button>  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const model = new Image();
+    model.src = 'assets/affiche-modele.png'; // Mets ton image dans ce chemin
+
+    model.onload = () => {
+      ctx.drawImage(model, 0, 0, canvas.width, canvas.height);
+    };
+
+    document.getElementById('upload').addEventListener('change', function(e) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const userImg = new Image();
+        userImg.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(userImg, 100, 150, 400, 400); // Ajuste ces valeurs pour la position
+          ctx.drawImage(model, 0, 0, canvas.width, canvas.height);
+        }
+        userImg.src = event.target.result;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'jyserai.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script></body>
+</html>
